@@ -6,10 +6,13 @@ on:
       - main
   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: macos-latest
+env:
+  IOS_BUNDLE_ID: com.rinosat.app
 
+jobs:
+  compile:
+    name: Compile (no signing)
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,8 +20,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          architecture: x64
+          channel: stable
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get
@@ -26,31 +29,101 @@ jobs:
       - name: Prepare iOS dependencies
         run: |
           cd ios
-          pod repo update
           pod install
 
-      - name: Import Certificates
-        uses: apple-actions/import-codesign-certs@v3
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+  release:
+    name: Sign and upload IPA
+    needs: compile
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          p12-file-base64: ${{ secrets.P12_BASE64 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}
+          channel: stable
+          cache: true
 
-      - name: Install Provisioning Profile
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Prepare iOS dependencies
         run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Rinosat_GPS.mobileprovision
+          cd ios
+          pod install
 
-      - name: Build iOS (IPA)
-        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+      - name: Install codemagic-cli-tools
+        run: pip3 install --break-system-packages codemagic-cli-tools
+
+      - name: Initialize signing keychain
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+        run: keychain initialize --password "$KEYCHAIN_PASSWORD"
+
+      - name: Decode App Store Connect API key
+        env:
+          ASC_API_KEY_BASE64: ${{ secrets.ASC_API_KEY_BASE64 }}
+        run: echo "$ASC_API_KEY_BASE64" | base64 -d > "$RUNNER_TEMP/AuthKey.p8"
+
+      - name: Write distribution signing private key
+        env:
+          IOS_DIST_PRIVATE_KEY: ${{ secrets.IOS_DIST_PRIVATE_KEY }}
+        run: printf '%s' "$IOS_DIST_PRIVATE_KEY" > "$RUNNER_TEMP/dist_private_key.pem"
+
+      - name: Fetch signing files from App Store Connect
+        env:
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.ASC_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          app-store-connect fetch-signing-files "$IOS_BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --private-key "@file:$RUNNER_TEMP/AuthKey.p8" \
+            --certificate-key "@file:$RUNNER_TEMP/dist_private_key.pem" \
+            --create
+
+      - name: Install certificates into keychain
+        run: keychain add-certificates
+
+      - name: Apply profiles to Xcode project
+        working-directory: ios
+        run: xcode-project use-profiles --export-options-plist "$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Archive and export IPA
+        run: |
+          flutter build ios --release --no-codesign
+          ARCHIVE_PATH="$RUNNER_TEMP/Runner.xcarchive"
+          EXPORT_PATH="$RUNNER_TEMP/ipa"
+          cd ios
+          xcodebuild \
+            -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath "$ARCHIVE_PATH" \
+            archive
+          xcodebuild \
+            -exportArchive \
+            -archivePath "$ARCHIVE_PATH" \
+            -exportPath "$EXPORT_PATH" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
 
       - name: Upload to App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
-          mkdir -p ~/.private_keys
-          echo "${{ secrets.APP_STORE_CONNECT_P8_BASE64 }}" | base64 --decode > ~/.private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
-          xcrun altool --upload-app --type ios --file build/ios/ipa/*.ipa --apiKey ${{ secrets.APP_STORE_CONNECT_KEY_ID }} --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          mkdir -p ~/.appstoreconnect/private_keys
+          cp "$RUNNER_TEMP/AuthKey.p8" "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          IPA=$(ls "$RUNNER_TEMP"/ipa/*.ipa | head -n 1)
+          xcrun altool --upload-app -t ios -f "$IPA" \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: rinosat-gps-ipa
-          path: build/ios/ipa/*.ipa
+          path: ${{ runner.temp }}/ipa/*.ipa

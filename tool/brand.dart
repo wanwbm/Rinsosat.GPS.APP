@@ -68,8 +68,8 @@ Future<void> _updatePackageId(String id) async {
 
   await _replaceInFile(
     'ios/Runner.xcodeproj/project.pbxproj',
-    RegExp(r'PRODUCT_BUNDLE_IDENTIFIER = org\.traccar.*?;'),
-    'PRODUCT_BUNDLE_IDENTIFIER = $id;',
+    RegExp(r'PRODUCT_BUNDLE_IDENTIFIER = [^;]+;'),
+    'PRODUCT_BUNDLE_IDENTIFIER = "$id";',
   );
 }
 

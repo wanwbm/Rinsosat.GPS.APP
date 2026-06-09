@@ -12,7 +12,8 @@ on:
         default: both
 
 env:
-  IOS_BUNDLE_ID: org.traccar.Rinosat GPSManager
+  IOS_BUNDLE_ID: com.rinosat.app
+  ANDROID_PACKAGE: com.rinosat.app
 
 jobs:
   build-android:
@@ -85,11 +86,11 @@ jobs:
           script: |
             adb wait-for-device
             adb install -r app-release.apk
-            adb shell am start -W -n org.traccar.manager/org.traccar.manager.MainActivity
+            adb shell am start -W -n com.rinosat.app/com.rinosat.app.MainActivity
             sleep 10
             adb shell screencap -p /sdcard/launch.png
             adb pull /sdcard/launch.png launch.png
-            adb shell pidof org.traccar.manager > /dev/null || { echo "App process not running after launch — crashed."; exit 1; }
+            adb shell pidof com.rinosat.app > /dev/null || { echo "App process not running after launch — crashed."; exit 1; }
 
       - uses: actions/upload-artifact@v5
         with:
@@ -110,7 +111,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: org.traccar.manager
+          packageName: com.rinosat.app
           releaseFiles: apk/app-release.apk
           track: production
           status: completed

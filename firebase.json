@@ -1,1 +1,30 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"traccar-manager-app","appId":"1:847296525014:android:ddfd572332cea794","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"traccar-manager-app","appId":"1:847296525014:ios:a9ee9ddfdb62f027","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"traccar-manager-app","configurations":{"android":"1:847296525014:android:ddfd572332cea794","ios":"1:847296525014:ios:a9ee9ddfdb62f027"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "rinosat-app",
+          "appId": "1:413447347609:android:f661a0557301eaa7808708",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "rinosat-app",
+          "appId": "1:413447347609:ios:37b58fc4daa025a3808708",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "rinosat-app",
+          "configurations": {
+            "android": "1:413447347609:android:f661a0557301eaa7808708",
+            "ios": "1:413447347609:ios:37b58fc4daa025a3808708"
+          }
+        }
+      }
+    }
+  }
+}

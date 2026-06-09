@@ -1,4 +1,4 @@
-package org.traccar.manager
+package com.rinosat.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

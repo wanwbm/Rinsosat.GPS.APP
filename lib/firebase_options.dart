@@ -5,15 +5,6 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -50,23 +41,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAAg2esrXqGG-_6TkPvpIfc3RlC2xFOysA',
-    appId: '1:847296525014:android:ddfd572332cea794',
-    messagingSenderId: '847296525014',
-    projectId: 'traccar-manager-app',
-    databaseURL: 'https://traccar-manager-app.firebaseio.com',
-    storageBucket: 'traccar-manager-app.appspot.com',
+    apiKey: 'AIzaSyCdeq_aGBaGoj6PuScBfsXyFpWSojrgeOo',
+    appId: '1:413447347609:android:f661a0557301eaa7808708',
+    messagingSenderId: '413447347609',
+    projectId: 'rinosat-app',
+    storageBucket: 'rinosat-app.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCa-dBF6DlD3CtKODjgrpoUjEwESsMttj8',
-    appId: '1:847296525014:ios:a9ee9ddfdb62f027',
-    messagingSenderId: '847296525014',
-    projectId: 'traccar-manager-app',
-    databaseURL: 'https://traccar-manager-app.firebaseio.com',
-    storageBucket: 'traccar-manager-app.appspot.com',
-    iosClientId: '847296525014-8d6vg8a08lfk1mp8j6mbgv96gq3n7cob.apps.googleusercontent.com',
-    iosBundleId: 'org.traccar.Rinosat GPSManager',
+    apiKey: 'AIzaSyDPOZw4hWdb3nO7LPEDbPkBaunNtqVeDW0',
+    appId: '1:413447347609:ios:37b58fc4daa025a3808708',
+    messagingSenderId: '413447347609',
+    projectId: 'rinosat-app',
+    storageBucket: 'rinosat-app.firebasestorage.app',
+    iosClientId:
+        '413447347609-h66476ar90h8v8m8hogdh2i586pbadvo.apps.googleusercontent.com',
+    iosBundleId: 'com.rinosat.app',
   );
-
 }

@@ -27,7 +27,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>org.rinosatapp.manager</string>
+				<string>com.rinosat.app</string>
 			</array>
 		</dict>
 	</array>

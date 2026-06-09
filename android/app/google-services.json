@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:413447347609:android:f661a0557301eaa7808708",
         "android_client_info": {
-          "package_name": "org.rinosatapp.manager"
+          "package_name": "com.rinosat.app"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "413447347609-23a7orecij7dms4kcta28o110ddo0tki.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.rinosatapp.manager"
+                "bundle_id": "com.rinosat.app"
               }
             }
           ]

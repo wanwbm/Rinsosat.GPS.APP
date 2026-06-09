@@ -24,7 +24,11 @@ jobs:
         run: flutter pub get
 
       - name: Install CocoaPods
-        run: cd ios && pod install
+        run: |
+          cd ios
+          rm -rf Pods
+          rm -rf Podfile.lock
+          pod install --repo-update
 
       - name: Import Certificates
         uses: apple-actions/import-codesign-certs@v3

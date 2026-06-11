@@ -23,11 +23,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Prepare iOS dependencies
+      - name: Pre-build iOS to generate configs
+        run: flutter build ios --no-codesign --config-only
+
+      - name: Install CocoaPods
         run: |
           cd ios
-          pod repo update
-          pod install
+          pod install --repo-update
 
       - name: Import Certificates
         uses: apple-actions/import-codesign-certs@v3

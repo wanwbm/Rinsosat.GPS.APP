@@ -1,6 +1,4 @@
-# [Rinosat GPS Manager app](https://www.traccar.org/manager)
-
-[![Get it on Google Play](http://www.tananaev.com/badges/google-play.svg)](https://play.google.com/store/apps/details?id=org.traccar.manager) [![Download on the App Store](http://www.tananaev.com/badges/app-store.svg)](https://itunes.apple.com/app/traccar-manager/id1113966562)
+# [Rinosat GPS Manager app]
 
 ## Overview
 
@@ -16,7 +14,7 @@ Connect the app to your Rinosat GPS Server, log in with your credentials, and in
 
 ## Team
 
-- Wanderson Moreira ([anton@traccar.org](mailto:anton@traccar.org))
+- Wanderson Moreira ([wborges.m@rinosat.com](mailto:wborges.m@rinosat.com))
 
 ## License
 

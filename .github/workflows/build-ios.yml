@@ -57,7 +57,7 @@ jobs:
           echo "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Rinosat_GPS.mobileprovision
 
       - name: Build iOS (IPA)
-        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist --no-enable-swift-package-manager
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
       - name: Upload to App Store Connect
         run: |

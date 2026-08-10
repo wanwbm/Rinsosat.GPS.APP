@@ -15,9 +15,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
-import 'package:rinosat_gps/error_screen.dart';
-import 'package:rinosat_gps/main.dart';
-import 'package:rinosat_gps/token_store.dart';
+import 'package:rinosat_manager/error_screen.dart';
+import 'package:rinosat_manager/main.dart';
+import 'package:rinosat_manager/token_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainScreen extends StatefulWidget {
@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
     await _initialized.future;
     _appLinks = AppLinks();
     _appLinksSubscription = _appLinks.uriLinkStream.listen((uri) {
-      if (uri.scheme == 'org.traccar.manager') {
+      if (uri.scheme == 'org.rinosatapp.manager') {
         final baseUri = Uri.parse(_getUrl());
         final appPathSegments = [uri.host, ...uri.pathSegments];
         final updatedQueryParameters = Map<String, String>.from(uri.queryParameters);
@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
       final originalRedirect = Uri.parse(uri.queryParameters['redirect_uri']!);
       final redirectSegments = originalRedirect.pathSegments;
       final updatedRedirect = Uri(
-        scheme: 'org.traccar.manager',
+        scheme: 'org.rinosatapp.manager',
         host: redirectSegments.first,
         path: '/${redirectSegments.skip(1).join('/')}',
         queryParameters: originalRedirect.queryParameters.isEmpty ? null : originalRedirect.queryParameters,
@@ -102,7 +102,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   String _getUrl() {
-    final url = _preferences.getString(_urlKey) ?? 'https://s4.rinosat.com/painel/';
+    var url = _preferences.getString(_urlKey) ?? 'https://app.rinosat.com/painel';
+    if (url.contains('traccar.org')) {
+      url = 'https://app.rinosat.com/painel';
+      _preferences.setString(_urlKey, url);
+    }
+    if (!url.startsWith('http')) {
+      url = 'https://$url';
+    }
     return url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   }
 
@@ -176,7 +183,11 @@ class _MainScreenState extends State<MainScreen> {
         _loadUrl(Uri.parse('${_getUrl()}/event/$eventId'));
       }
     });
-    await _messaging.requestPermission();
+    try {
+      await _messaging.requestPermission();
+    } catch (e) {
+      developer.log('Failed to request notification permission', error: e);
+    }
     await _authenticated.future.timeout(const Duration(seconds: 30), onTimeout: () {});
     _messaging.onTokenRefresh.listen((newToken) {
       _controller?.evaluateJavascript(source: "updateNotificationToken?.('$newToken')");
@@ -351,7 +362,12 @@ class _MainScreenState extends State<MainScreen> {
                 _launchAuthorizeRequest(uri);
                 return NavigationActionPolicy.CANCEL;
               }
-              if (uri.authority != Uri.parse(_getUrl()).authority) {
+              final currentAuthority = Uri.parse(_getUrl()).authority;
+              final targetAuthority = uri.authority;
+              final isInternal = targetAuthority == currentAuthority ||
+                  targetAuthority.endsWith('rinosat.com');
+
+              if (!isInternal) {
                 try {
                   launchUrl(uri, mode: LaunchMode.externalApplication);
                 } catch (e) {

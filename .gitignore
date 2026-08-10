@@ -45,3 +45,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Rinosat signing (NUNCA subir para o GitHub)
+/environment/
+*.keystore
+*.jks
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist

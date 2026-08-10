@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:413447347609:android:f661a0557301eaa7808708",
+        "mobilesdk_app_id": "1:413447347609:android:df845247c7def42d808708",
         "android_client_info": {
-          "package_name": "com.rinosat.app"
+          "package_name": "gps.app.rinosat.com"
         }
       },
       "oauth_client": [
@@ -34,7 +34,43 @@
               "client_id": "413447347609-23a7orecij7dms4kcta28o110ddo0tki.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.rinosat.app"
+                "bundle_id": "org.rinosatapp.manager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413447347609:android:f661a0557301eaa7808708",
+        "android_client_info": {
+          "package_name": "org.rinosatapp.manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413447347609-ddin7fna8rvncrljlqb05k1qgap8kjv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdeq_aGBaGoj6PuScBfsXyFpWSojrgeOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413447347609-ddin7fna8rvncrljlqb05k1qgap8kjv6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "413447347609-23a7orecij7dms4kcta28o110ddo0tki.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.rinosatapp.manager"
               }
             }
           ]

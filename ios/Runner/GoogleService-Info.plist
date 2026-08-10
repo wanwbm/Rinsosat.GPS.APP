@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>413447347609-h66476ar90h8v8m8hogdh2i586pbadvo.apps.googleusercontent.com</string>
+	<string>847296525014-8d6vg8a08lfk1mp8j6mbgv96gq3n7cob.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.413447347609-h66476ar90h8v8m8hogdh2i586pbadvo</string>
+	<string>com.googleusercontent.apps.847296525014-8d6vg8a08lfk1mp8j6mbgv96gq3n7cob</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDPOZw4hWdb3nO7LPEDbPkBaunNtqVeDW0</string>
+	<string>AIzaSyCa-dBF6DlD3CtKODjgrpoUjEwESsMttj8</string>
 	<key>GCM_SENDER_ID</key>
-	<string>413447347609</string>
+	<string>847296525014</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:413447347609:ios:37b58fc4daa025a3808708</string>
+	<string>1:847296525014:ios:a9ee9ddfdb62f027</string>
+	<key>DATABASE_URL</key>
+	<string>https://rinosat-app.firebaseio.com</string>
 </dict>
 </plist>

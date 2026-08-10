@@ -1,33 +1,21 @@
-# [Rinosat GPS Manager app]
+# Rinosat GPS Manager
 
-## Overview
+## Visão geral
 
-Rinosat GPS Manager is the official mobile app for managing and monitoring your GPS tracking devices with the open-source Rinosat GPS platform.
+Rinosat GPS Manager é a app oficial de gestão e monitorização de dispositivos de rastreamento GPS da Rinosat.
 
-- **Live Tracking**: View the real-time location of all your devices on an interactive map.
-- **Device Management**: Add, edit, or remove devices directly from your mobile device.
-- **Event Notifications**: Receive alerts for geofence crossings, device status changes, and more.
-- **History and Reports**: Review past routes and generate trip history for any device.
-- **Secure and Private**: All your data stays on your own server—no third-party access.
+- **Rastreamento em tempo real**: visualiza a localização de todos os teus dispositivos num mapa interativo.
+- **Gestão de dispositivos**: adiciona, edita ou remove dispositivos diretamente pelo telemóvel.
+- **Notificações de eventos**: recebe alertas de geofencing, alterações de estado e muito mais.
+- **Histórico e relatórios**: consulta rotas anteriores e gera histórico de viagens.
+- **Seguro e privado**: os teus dados ficam no teu próprio servidor, sem acesso de terceiros.
 
-Connect the app to your Rinosat GPS Server, log in with your credentials, and instantly manage and monitor your fleet or personal devices from anywhere.
-
-## Team
+## Equipa
 
 - Wanderson Moreira ([wborges.m@rinosat.com](mailto:wborges.m@rinosat.com))
 
-## License
+## Licença
 
-    Apache License, Version 2.0
+Software proprietário. Todos os direitos reservados.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Este projeto não é de código aberto. É proibida a cópia, distribuição ou modificação sem autorização prévia e por escrito de Wanderson Moreira.

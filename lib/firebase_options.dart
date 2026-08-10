@@ -50,23 +50,27 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAAg2esrXqGG-_6TkPvpIfc3RlC2xFOysA',
-    appId: '1:847296525014:android:ddfd572332cea794',
-    messagingSenderId: '847296525014',
-    projectId: 'traccar-manager-app',
-    databaseURL: 'https://traccar-manager-app.firebaseio.com',
-    storageBucket: 'traccar-manager-app.appspot.com',
+    apiKey: 'AIzaSyCdeq_aGBaGoj6PuScBfsXyFpWSojrgeOo',
+    appId: '1:413447347609:android:f661a0557301eaa7808708',
+    messagingSenderId: '413447347609',
+    projectId: 'rinosat-app',
+    storageBucket: 'rinosat-app.firebasestorage.app',
   );
 
+  // TODO: pendente — não existe um app iOS "org.rinosatapp.manager" registado
+  // no Firebase (o GoogleService-Info.plist enviado é do bundle com.rinosat.app,
+  // que é de OUTRA app). Os valores abaixo são os antigos (placeholder) e
+  // NÃO devem ser usados em produção até criares o app iOS certo na Firebase
+  // console e me enviares o GoogleService-Info.plist correspondente.
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCa-dBF6DlD3CtKODjgrpoUjEwESsMttj8',
     appId: '1:847296525014:ios:a9ee9ddfdb62f027',
     messagingSenderId: '847296525014',
-    projectId: 'traccar-manager-app',
-    databaseURL: 'https://traccar-manager-app.firebaseio.com',
-    storageBucket: 'traccar-manager-app.appspot.com',
+    projectId: 'rinosat-app',
+    databaseURL: 'https://rinosat-app.firebaseio.com',
+    storageBucket: 'rinosat-app.firebasestorage.app',
     iosClientId: '847296525014-8d6vg8a08lfk1mp8j6mbgv96gq3n7cob.apps.googleusercontent.com',
-    iosBundleId: 'org.traccar.Rinosat GPSManager',
+    iosBundleId: 'org.rinosatapp.manager',
   );
 
 }

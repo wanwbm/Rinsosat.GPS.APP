@@ -13,13 +13,13 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile = project.file("key.properties")
+val keystorePropertiesFile = rootProject.file("../environment/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
-    namespace = "com.rinosat.app"
+    namespace = "org.rinosatapp.manager"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.rinosat.app"
+        applicationId = "org.rinosatapp.manager"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

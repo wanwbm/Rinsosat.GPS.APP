@@ -8,8 +8,8 @@
 	<string>ZQKCNHPLF4</string>
 	<key>provisioningProfiles</key>
 	<dict>
-	<key>com.rinosat.app</key>
-	<string>Rinosat GPS</string>
+		<key>com.rinosat.app</key>
+		<string>Rinosat GPS</string>
 	</dict>
 	<key>signingStyle</key>
 	<string>manual</string>

@@ -29,13 +29,6 @@ jobs:
         run: |
           echo "${{ secrets.P12_BASE64 }}" | base64 --decode > /tmp/Certificates.p12
 
-      - name: Debug p12 on runner
-        run: |
-          ls -la /tmp/Certificates.p12
-          openssl pkcs12 -in /tmp/Certificates.p12 -info -noout -passin pass:"${{ secrets.P12_PASSWORD }}" 2>&1 | head -20
-          echo "PASSWORD_LEN_CHECK"
-          printf '%s' "${{ secrets.P12_PASSWORD }}" | wc -c
-
       - name: Decode provisioning profile
         run: |
           echo "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > /tmp/Rinosat.mobileprovision
@@ -51,7 +44,7 @@ jobs:
         run: |
           security import /tmp/Certificates.p12 \
             -k ~/Library/Keychains/build.keychain \
-            -P "" \
+            -P "${{ secrets.P12_PASSWORD }}" \
             -T /usr/bin/codesign \
             -T /usr/bin/security
 

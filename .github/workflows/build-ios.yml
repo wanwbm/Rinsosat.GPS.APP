@@ -44,7 +44,7 @@ jobs:
         run: |
           security import /tmp/Certificates.p12 \
             -k ~/Library/Keychains/build.keychain \
-            -P "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            -P "${{ secrets.P12_PASSWORD }}" \
             -T /usr/bin/codesign \
             -T /usr/bin/security
 

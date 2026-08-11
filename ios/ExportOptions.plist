@@ -9,7 +9,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>com.rinosat.app</key>
-		<string>Rinosat GPS</string>
+		<string>Rinosat GPS v2</string>
 	</dict>
 	<key>signingStyle</key>
 	<string>manual</string>

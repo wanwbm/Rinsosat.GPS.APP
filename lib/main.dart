@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:rinosat_manager/main_screen.dart';
+import 'package:rinosat_manager/token_store.dart';
 
 class _SplashScreen extends StatefulWidget {
   const _SplashScreen({super.key});
@@ -18,8 +19,13 @@ class _SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<_SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _fade;
-  late final Animation<double> _scale;
+  late final Animation<double> _glowFade;
+  late final Animation<double> _glowScale;
+  late final Animation<double> _logoFade;
+  late final Animation<double> _logoScale;
+  late final Animation<double> _titleFade;
+  late final Animation<double> _titleOffset;
+  late final Animation<double> _outroFade;
   Timer? _timer;
 
   @override
@@ -27,29 +33,76 @@ class _SplashScreenState extends State<_SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 2300),
     );
-    _fade = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _scale = Tween<double>(begin: 0.75, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+
+    _glowFade = Tween<double>(begin: 0.0, end: 0.45).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.55, curve: Curves.easeOut),
+      ),
     );
+    _glowScale = Tween<double>(begin: 0.2, end: 1.25).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _logoFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.12, 0.32, curve: Curves.easeIn),
+      ),
+    );
+    _logoScale = Tween<double>(begin: 0.55, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.12, 0.5, curve: Curves.elasticOut),
+      ),
+    );
+
+    _titleFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.5, 0.72, curve: Curves.easeIn),
+      ),
+    );
+    _titleOffset = Tween<double>(begin: 14.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.5, 0.75, curve: Curves.easeOut),
+      ),
+    );
+
+    _outroFade = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.86, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
     _controller.forward();
-    _timer = Timer(const Duration(milliseconds: 1800), _onFinished);
+    _timer = Timer(const Duration(milliseconds: 2300), _onFinished);
   }
 
-  void _onFinished() {
-    if (mounted && navigatorKey.currentContext != null) {
-      Navigator.of(navigatorKey.currentContext!).pushReplacement(
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 400),
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const MainScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+  Future<void> _onFinished() async {
+    final tokenStore = TokenStore();
+    var unlocked = false;
+    if (await tokenStore.hasToken()) {
+      unlocked = await tokenStore.authenticate();
     }
+    if (!mounted || navigatorKey.currentContext == null) return;
+    Navigator.of(navigatorKey.currentContext!).pushReplacement(
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            MainScreen(biometricsUnlocked: unlocked),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
   }
 
   @override
@@ -61,19 +114,71 @@ class _SplashScreenState extends State<_SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fade,
-          child: ScaleTransition(
-            scale: _scale,
-            child: Image.asset(
-              'assets/logo.png',
-              width: 180,
-              height: 180,
-              fit: BoxFit.contain,
-            ),
+    return FadeTransition(
+      opacity: _outroFade,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 220,
+                height: 220,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    FadeTransition(
+                      opacity: _glowFade,
+                      child: ScaleTransition(
+                        scale: _glowScale,
+                        child: Container(
+                          width: 220,
+                          height: 220,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                const Color(0xFF3B82F6).withValues(alpha: 0.35),
+                                const Color(0xFF3B82F6).withValues(alpha: 0.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    FadeTransition(
+                      opacity: _logoFade,
+                      child: ScaleTransition(
+                        scale: _logoScale,
+                        child: Image.asset(
+                          'assets/logo.png',
+                          width: 150,
+                          height: 150,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              FadeTransition(
+                opacity: _titleFade,
+                child: Transform.translate(
+                  offset: Offset(0, _titleOffset.value),
+                  child: const Text(
+                    'Rinosat GPS',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

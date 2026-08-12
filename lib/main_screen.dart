@@ -21,7 +21,9 @@ import 'package:rinosat_manager/token_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.biometricsUnlocked = false});
+
+  final bool biometricsUnlocked;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -32,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final _initialized = Completer<void>();
   final _authenticated = Completer<void>();
+  late bool _biometricsUnlocked = widget.biometricsUnlocked;
 
   late final SharedPreferencesWithCache _preferences;
   late final AppLinks _appLinks;
@@ -130,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _downloadFile(Uri uri) async {
     try {
-      final token = await _loginTokenStore.read(false);
+      final token = await _loginTokenStore.read();
       if (token == null) return;
       final response = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
@@ -218,6 +221,7 @@ class _MainScreenState extends State<MainScreen> {
       case 'login':
         if (parts.length > 1) {
           await _loginTokenStore.save(parts[1]);
+          _biometricsUnlocked = true;
         }
         try {
           final notificationToken = await _messaging.getToken();
@@ -228,14 +232,20 @@ class _MainScreenState extends State<MainScreen> {
           developer.log('Failed to get notification token', error: e);
         }
       case 'authentication':
-        final loginToken = await _loginTokenStore.read(true);
-        if (loginToken != null) {
-          _controller?.evaluateJavascript(source: "handleLoginToken?.('$loginToken')");
+        if (!_biometricsUnlocked && await _loginTokenStore.hasToken()) {
+          _biometricsUnlocked = await _loginTokenStore.authenticate();
+        }
+        if (_biometricsUnlocked) {
+          final loginToken = await _loginTokenStore.read();
+          if (loginToken != null) {
+            _controller?.evaluateJavascript(source: "handleLoginToken?.('$loginToken')");
+          }
         }
       case 'authenticated':
         if (!_authenticated.isCompleted) _authenticated.complete();
       case 'logout':
         await _loginTokenStore.delete();
+        _biometricsUnlocked = false;
       case 'download':
         try {
           _shareFile('report.xlsx', base64Decode(parts[1]));
@@ -245,6 +255,7 @@ class _MainScreenState extends State<MainScreen> {
       case 'server':
         final url = parts[1];
         await _loginTokenStore.delete();
+        _biometricsUnlocked = false;
         await _preferences.setString(_urlKey, url);
         await _loadUrl(Uri.parse(url));
     }
@@ -273,6 +284,7 @@ class _MainScreenState extends State<MainScreen> {
         url: _getUrl(),
         onUrlSubmitted: (url) async {
           await _loginTokenStore.delete();
+          _biometricsUnlocked = false;
           await _preferences.setString(_urlKey, url);
           setState(() {
             _initialUrl = url;

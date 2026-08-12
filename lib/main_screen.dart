@@ -50,6 +50,7 @@ class _MainScreenState extends State<MainScreen> {
     _initWebView();
     _initAppLinks();
     _initNotifications();
+    _ensureLocationPermission();
   }
 
   Future<void> _initAppLinks() async {
@@ -175,6 +176,16 @@ class _MainScreenState extends State<MainScreen> {
     _maybeCompleteInitialized();
   }
 
+  Future<void> _ensureLocationPermission() async {
+    try {
+      final status = await Permission.location.status;
+      if (status.isGranted || status.isLimited) return;
+      await Permission.location.request();
+    } catch (e) {
+      developer.log('Failed to request location permission', error: e);
+    }
+  }
+
   Future<void> _initNotifications() async {
     await _initialized.future;
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -298,6 +309,7 @@ class _MainScreenState extends State<MainScreen> {
               useShouldOverrideUrlLoading: true,
               supportZoom: false,
               builtInZoomControls: false,
+              geolocationEnabled: true,
             ),
             initialUserScripts: UnmodifiableListView<UserScript>([
               UserScript(
@@ -400,10 +412,13 @@ class _MainScreenState extends State<MainScreen> {
               controller.reload();
             },
             onGeolocationPermissionsShowPrompt: (controller, origin) async {
-              final status = await Permission.location.request();
+              var status = await Permission.location.status;
+              if (!status.isGranted && !status.isLimited) {
+                status = await Permission.location.request();
+              }
               return GeolocationPermissionShowPromptResponse(
                 origin: origin,
-                allow: status.isGranted,
+                allow: status.isGranted || status.isLimited,
                 retain: true,
               );
             },

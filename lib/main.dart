@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,79 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:rinosat_manager/main_screen.dart';
+
+class _SplashScreen extends StatefulWidget {
+  const _SplashScreen({super.key});
+
+  @override
+  State<_SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<_SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<double> _scale;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _fade = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _scale = Tween<double>(begin: 0.75, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+    _controller.forward();
+    _timer = Timer(const Duration(milliseconds: 1800), _onFinished);
+  }
+
+  void _onFinished() {
+    if (mounted && navigatorKey.currentContext != null) {
+      Navigator.of(navigatorKey.currentContext!).pushReplacement(
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 400),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const MainScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: FadeTransition(
+          opacity: _fade,
+          child: ScaleTransition(
+            scale: _scale,
+            child: Image.asset(
+              'assets/logo.png',
+              width: 180,
+              height: 180,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +134,7 @@ class _MainAppState extends State<MainApp> {
           brightness: Brightness.dark,
         ),
       ),
-      home: MainScreen(),
+      home: const _SplashScreen(),
       builder: (context, child) {
         final brightness = MediaQuery.of(context).platformBrightness;
         SystemChrome.setSystemUIOverlayStyle(

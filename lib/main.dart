@@ -151,57 +151,13 @@ class _SplashScreenState extends State<_SplashScreen>
                 ),
               ),
               const SizedBox(height: 8),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _LetterSpacingTitle(controller: _controller),
-                  const SizedBox(height: 14),
-                  _GoldLine(controller: _controller),
-                ],
-              ),
+              _GoldLine(controller: _controller),
             ],
           ),
         ),
       ),
     );
   }
-}
-
-class _LetterSpacingTitle extends StatelessWidget {
-  const _LetterSpacingTitle({required this.controller});
-
-  final AnimationController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    const text = 'Rinosat GPS';
-    final letters = text.split('');
-    final spacing = _Spacing(size: 10);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < letters.length; i++)
-          if (letters[i] == ' ')
-            spacing
-          else
-            _BouncyLetter(
-              letter: letters[i],
-              index: i,
-              controller: controller,
-            ),
-      ],
-    );
-  }
-}
-
-class _Spacing extends StatelessWidget {
-  const _Spacing({required this.size});
-
-  final double size;
-
-  @override
-  Widget build(BuildContext context) => SizedBox(width: size);
 }
 
 class _GoldLine extends StatelessWidget {
@@ -257,64 +213,6 @@ class _GoldLine extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _BouncyLetter extends StatelessWidget {
-  const _BouncyLetter({
-    required this.letter,
-    required this.index,
-    required this.controller,
-  });
-
-  final String letter;
-  final int index;
-  final AnimationController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final start = 0.5 + index * 0.02;
-    final fade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: Interval(start, (start + 0.14).clamp(0.0, 1.0), curve: Curves.easeIn),
-      ),
-    );
-    final scale = Tween<double>(begin: 0.92, end: 1.0).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: Interval(start, (start + 0.18).clamp(0.0, 1.0), curve: Curves.easeOutCubic),
-      ),
-    );
-    final offset = Tween<double>(begin: 10.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: Interval(start, (start + 0.18).clamp(0.0, 1.0), curve: Curves.easeOutCubic),
-      ),
-    );
-
-    return AnimatedBuilder(
-      animation: Listenable.merge([fade, scale, offset]),
-      builder: (context, child) => Opacity(
-        opacity: fade.value,
-        child: Transform.translate(
-          offset: Offset(0, offset.value),
-          child: Transform.scale(
-            scale: scale.value,
-            child: child,
-          ),
-        ),
-      ),
-      child: Text(
-        letter,
-        style: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 3,
-          color: Color(0xFF1E293B),
-        ),
-      ),
     );
   }
 }

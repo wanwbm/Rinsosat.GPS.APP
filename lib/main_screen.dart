@@ -311,9 +311,7 @@ class _MainScreenState extends State<MainScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          maintainBottomViewPadding: true,
-          child: InAppWebView(
+        body: InAppWebView(
             key: ValueKey(_initialUrl),
             initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),
             initialSettings: InAppWebViewSettings(
@@ -456,7 +454,6 @@ class _MainScreenState extends State<MainScreen> {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 }

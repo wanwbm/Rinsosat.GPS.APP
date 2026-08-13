@@ -74,8 +74,11 @@ class _SplashScreenState extends State<_SplashScreen>
   Future<void> _onFinished() async {
     final tokenStore = TokenStore();
     var unlocked = false;
-    if (await tokenStore.hasToken()) {
+    final has = await tokenStore.hasToken();
+    FirebaseCrashlytics.instance.log('Splash: hasToken=$has');
+    if (has) {
       unlocked = await tokenStore.authenticate();
+      FirebaseCrashlytics.instance.log('Splash: authenticate=$unlocked');
     }
     if (!mounted || navigatorKey.currentContext == null) return;
     Navigator.of(navigatorKey.currentContext!).pushReplacement(

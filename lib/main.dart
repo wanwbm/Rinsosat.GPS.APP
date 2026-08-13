@@ -23,8 +23,6 @@ class _SplashScreenState extends State<_SplashScreen>
   late final Animation<double> _glowScale;
   late final Animation<double> _logoFade;
   late final Animation<double> _logoScale;
-  late final Animation<double> _titleFade;
-  late final Animation<double> _titleOffset;
   late final Animation<double> _outroFade;
   Timer? _timer;
 
@@ -59,19 +57,6 @@ class _SplashScreenState extends State<_SplashScreen>
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.12, 0.5, curve: Curves.elasticOut),
-      ),
-    );
-
-    _titleFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 0.72, curve: Curves.easeIn),
-      ),
-    );
-    _titleOffset = Tween<double>(begin: 14.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 0.75, curve: Curves.easeOut),
       ),
     );
 
@@ -163,23 +148,104 @@ class _SplashScreenState extends State<_SplashScreen>
                 ),
               ),
               const SizedBox(height: 8),
-              FadeTransition(
-                opacity: _titleFade,
-                child: Transform.translate(
-                  offset: Offset(0, _titleOffset.value),
-                  child: const Text(
-                    'Rinosat GPS',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 2,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
-                ),
-              ),
+              _LetterSpacingTitle(controller: _controller),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LetterSpacingTitle extends StatelessWidget {
+  const _LetterSpacingTitle({required this.controller});
+
+  final AnimationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    const text = 'Rinosat GPS';
+    final letters = text.split('');
+    final spacing = _Spacing(size: 10);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < letters.length; i++)
+          if (letters[i] == ' ')
+            spacing
+          else
+            _BouncyLetter(
+              letter: letters[i],
+              index: i,
+              controller: controller,
+            ),
+      ],
+    );
+  }
+}
+
+class _Spacing extends StatelessWidget {
+  const _Spacing({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(width: size);
+}
+
+class _BouncyLetter extends StatelessWidget {
+  const _BouncyLetter({
+    required this.letter,
+    required this.index,
+    required this.controller,
+  });
+
+  final String letter;
+  final int index;
+  final AnimationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final start = 0.42 + index * 0.028;
+    final fade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Interval(start, (start + 0.16).clamp(0.0, 1.0), curve: Curves.easeIn),
+      ),
+    );
+    final scale = Tween<double>(begin: 0.4, end: 1.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Interval(start, (start + 0.22).clamp(0.0, 1.0), curve: Curves.elasticOut),
+      ),
+    );
+    final offset = Tween<double>(begin: 30.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Interval(start, (start + 0.24).clamp(0.0, 1.0), curve: Curves.elasticOut),
+      ),
+    );
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([fade, scale, offset]),
+      builder: (context, child) => Opacity(
+        opacity: fade.value,
+        child: Transform.translate(
+          offset: Offset(0, offset.value),
+          child: Transform.scale(
+            scale: scale.value,
+            child: child,
+          ),
+        ),
+      ),
+      child: Text(
+        letter,
+        style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 2,
+          color: Color(0xFF1E293B),
         ),
       ),
     );

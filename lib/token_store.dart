@@ -49,10 +49,8 @@ class TokenStore {
     try {
       return await _auth.authenticate(
         localizedReason: biometricReason(),
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: true,
-        ),
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
       );
     } on LocalAuthException catch (e) {
       developer.log('Failed to authenticate.', error: e);

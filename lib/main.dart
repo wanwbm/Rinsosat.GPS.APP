@@ -53,10 +53,10 @@ class _SplashScreenState extends State<_SplashScreen>
         curve: const Interval(0.12, 0.32, curve: Curves.easeIn),
       ),
     );
-    _logoScale = Tween<double>(begin: 0.55, end: 1.0).animate(
+    _logoScale = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.12, 0.5, curve: Curves.elasticOut),
+        curve: const Interval(0.12, 0.55, curve: Curves.easeOutBack),
       ),
     );
 
@@ -151,7 +151,14 @@ class _SplashScreenState extends State<_SplashScreen>
                 ),
               ),
               const SizedBox(height: 8),
-              _LetterSpacingTitle(controller: _controller),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _LetterSpacingTitle(controller: _controller),
+                  const SizedBox(height: 14),
+                  _GoldLine(controller: _controller),
+                ],
+              ),
             ],
           ),
         ),
@@ -197,6 +204,63 @@ class _Spacing extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(width: size);
 }
 
+class _GoldLine extends StatelessWidget {
+  const _GoldLine({required this.controller});
+
+  final AnimationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: const Interval(0.75, 0.95, curve: Curves.easeOutCubic),
+      ),
+    );
+    final opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: const Interval(0.72, 0.9, curve: Curves.easeOut),
+      ),
+    );
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([scale, opacity]),
+      builder: (context, child) {
+        return Opacity(
+          opacity: opacity.value,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.center,
+              widthFactor: scale.value,
+              child: Container(
+                width: 120,
+                height: 2,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0x00C9A24C),
+                      Color(0xFFC9A24C),
+                      Color(0x00C9A24C),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFC9A24C).withValues(alpha: 0.4),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _BouncyLetter extends StatelessWidget {
   const _BouncyLetter({
     required this.letter,
@@ -210,23 +274,23 @@ class _BouncyLetter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final start = 0.42 + index * 0.028;
+    final start = 0.5 + index * 0.02;
     final fade = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(start, (start + 0.16).clamp(0.0, 1.0), curve: Curves.easeIn),
+        curve: Interval(start, (start + 0.14).clamp(0.0, 1.0), curve: Curves.easeIn),
       ),
     );
-    final scale = Tween<double>(begin: 0.4, end: 1.0).animate(
+    final scale = Tween<double>(begin: 0.92, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(start, (start + 0.22).clamp(0.0, 1.0), curve: Curves.elasticOut),
+        curve: Interval(start, (start + 0.18).clamp(0.0, 1.0), curve: Curves.easeOutCubic),
       ),
     );
-    final offset = Tween<double>(begin: 30.0, end: 0.0).animate(
+    final offset = Tween<double>(begin: 10.0, end: 0.0).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(start, (start + 0.24).clamp(0.0, 1.0), curve: Curves.elasticOut),
+        curve: Interval(start, (start + 0.18).clamp(0.0, 1.0), curve: Curves.easeOutCubic),
       ),
     );
 
@@ -246,8 +310,8 @@ class _BouncyLetter extends StatelessWidget {
         letter,
         style: const TextStyle(
           fontSize: 24,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 2,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 3,
           color: Color(0xFF1E293B),
         ),
       ),

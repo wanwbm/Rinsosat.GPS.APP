@@ -320,6 +320,7 @@ class _MainScreenState extends State<MainScreen> {
               supportZoom: false,
               builtInZoomControls: false,
               geolocationEnabled: true,
+              contentInsetAdjustmentBehavior: ScrollViewContentInsetAdjustmentBehavior.AUTOMATIC,
             ),
             initialUserScripts: UnmodifiableListView<UserScript>([
               UserScript(

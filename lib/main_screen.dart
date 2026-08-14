@@ -311,7 +311,9 @@ class _MainScreenState extends State<MainScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: InAppWebView(
+        body: SafeArea(
+          maintainBottomViewPadding: true,
+          child: InAppWebView(
             key: ValueKey(_initialUrl),
             initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),
             initialSettings: InAppWebViewSettings(
@@ -320,7 +322,6 @@ class _MainScreenState extends State<MainScreen> {
               supportZoom: false,
               builtInZoomControls: false,
               geolocationEnabled: true,
-              contentInsetAdjustmentBehavior: ScrollViewContentInsetAdjustmentBehavior.AUTOMATIC,
             ),
             initialUserScripts: UnmodifiableListView<UserScript>([
               UserScript(
@@ -454,6 +455,7 @@ class _MainScreenState extends State<MainScreen> {
               );
             },
           ),
+        ),
         ),
       );
   }

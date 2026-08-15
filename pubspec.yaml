@@ -1,7 +1,7 @@
 name: rinosat_manager
 description: "Rinosat GPS Manager"
 publish_to: 'none'
-version: 6.0.14+82
+version: 6.0.15+83
 
 environment:
   sdk: ^3.7.2

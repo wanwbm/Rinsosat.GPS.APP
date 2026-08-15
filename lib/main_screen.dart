@@ -312,7 +312,10 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-          maintainBottomViewPadding: true,
+          left: false,
+          top: true,
+          right: false,
+          bottom: false,
           child: InAppWebView(
             key: ValueKey(_initialUrl),
             initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),

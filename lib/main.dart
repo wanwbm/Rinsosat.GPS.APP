@@ -4,7 +4,6 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:rinosat_manager/main_screen.dart';
 import 'package:rinosat_manager/token_store.dart';
@@ -272,12 +271,6 @@ class _MainAppState extends State<MainApp> {
       ),
       home: const _SplashScreen(),
       builder: (context, child) {
-        final brightness = MediaQuery.of(context).platformBrightness;
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarIconBrightness: brightness == Brightness.dark ? Brightness.light : Brightness.dark,
-          ),
-        );
         return child!;
       },
     );

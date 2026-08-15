@@ -47,6 +47,33 @@ class _MainScreenState extends State<MainScreen> {
   bool _settingsReady = false;
   bool _controllerReady = false;
 
+  /// Cor de fundo do tema activo do painel, aplicada na zona do notch/status bar.
+  Color _themeBackground = const Color(0xFFFDFDFD);
+
+  void _applyTheme({required String mode, required String hex}) {
+    Color color;
+    try {
+      color = Color(int.parse(hex.replaceFirst('#', 'FF'), radix: 16));
+    } catch (_) {
+      color = mode == 'dark' ? const Color(0xFF1C1C22) : const Color(0xFFFDFDFD);
+    }
+    final brightness =
+        color.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
+    setState(() {
+      _themeBackground = color;
+    });
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: color,
+        statusBarIconBrightness:
+            brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+        statusBarBrightness:
+            brightness == Brightness.dark ? Brightness.dark : Brightness.light,
+        systemNavigationBarColor: color,
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -263,6 +290,10 @@ class _MainScreenState extends State<MainScreen> {
         _biometricsUnlocked = false;
         await _preferences.setString(_urlKey, url);
         await _loadUrl(Uri.parse(url));
+      case 'theme':
+        if (parts.length >= 3) {
+          _applyTheme(mode: parts[1], hex: parts[2]);
+        }
     }
   }
 
@@ -316,6 +347,7 @@ class _MainScreenState extends State<MainScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        backgroundColor: _themeBackground,
         body: SafeArea(
           left: false,
           top: true,

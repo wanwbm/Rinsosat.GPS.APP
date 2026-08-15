@@ -52,3 +52,6 @@ app.*.map.json
 *.jks
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+
+# Android build cache (não subir)
+/android/.kotlin/

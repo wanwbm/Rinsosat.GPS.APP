@@ -189,6 +189,17 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future<void> _sendNotificationToken() async {
+    try {
+      final notificationToken = await _messaging.getToken();
+      if (notificationToken != null) {
+        _controller?.evaluateJavascript(source: "updateNotificationToken?.('$notificationToken')");
+      }
+    } catch (e) {
+      developer.log('Failed to get notification token', error: e);
+    }
+  }
+
   Future<void> _initNotifications() async {
     await _initialized.future;
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -203,6 +214,7 @@ class _MainScreenState extends State<MainScreen> {
       developer.log('Failed to request notification permission', error: e);
     }
     await _authenticated.future.timeout(const Duration(seconds: 30), onTimeout: () {});
+    await _sendNotificationToken();
     _messaging.onTokenRefresh.listen((newToken) {
       _controller?.evaluateJavascript(source: "updateNotificationToken?.('$newToken')");
     });
@@ -223,14 +235,7 @@ class _MainScreenState extends State<MainScreen> {
           await _loginTokenStore.save(parts[1]);
           _biometricsUnlocked = true;
         }
-        try {
-          final notificationToken = await _messaging.getToken();
-          if (notificationToken != null) {
-            _controller?.evaluateJavascript(source: "updateNotificationToken?.('$notificationToken')");
-          }
-        } catch (e) {
-          developer.log('Failed to get notification token', error: e);
-        }
+        await _sendNotificationToken();
       case 'authentication':
         if (!_biometricsUnlocked && await _loginTokenStore.hasToken()) {
           _biometricsUnlocked = await _loginTokenStore.authenticate();
